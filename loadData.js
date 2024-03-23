@@ -43,6 +43,11 @@ const dbLoader = new NotionAPILoader({
 // https://js.langchain.com/docs/modules/data_connection/document_transformers/
 const docs = await dbLoader.load();
 
+// Extract the Notion IDs from the documents
+// We'll use this to ensure the document IDs are the same in the vector store
+// And prevent duplicates
+const ids = docs.map((doc) => doc.metadata.notionId);
+
 /**
  * Load the docs into the vector store
  *
@@ -50,12 +55,17 @@ const docs = await dbLoader.load();
  * This is crucial. It dictates how Chroma generates embeddings for the documents.
  * You are not limited to using OpenAIEmbeddings; you can use any embeddings provided by Langchain.
  */
-await Chroma.fromDocuments(docs, new OpenAIEmbeddings(), {
+const client = new Chroma(new OpenAIEmbeddings(), {
+  url: "http://localhost:8000",
   collectionName: COLLECTION_NAME,
-  url: "http://localhost:8000", // Optional, will default to this value
   collectionMetadata: {
     "hnsw:space": "cosine",
-  }, // Optional, can be used to specify the distance method of the embedding space https://docs.trychroma.com/usage-guide#changing-the-distance-function
+  },
+});
+
+// Load the documents into the vector store
+await client.addDocuments(docs, {
+  ids,
 });
 
 console.log("Success");
