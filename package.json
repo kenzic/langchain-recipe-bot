@@ -1,0 +1,21 @@
+{
+  "name": "notion-search",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "load": "node loadData.js",
+    "chat": "node index.js"
+  },
+  "dependencies": {
+    "@kenzic/quick-cli-prompt": "^1.0.1",
+    "@langchain/openai": "^0.0.16",
+    "@notionhq/client": "^2.2.14",
+    "chromadb": "^1.8.1",
+    "dotenv": "^16.4.5",
+    "langchain": "^0.1.25",
+    "langsmith": "^0.1.13",
+    "notion-to-md": "^3.1.1"
+  }
+}
